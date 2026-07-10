@@ -51,7 +51,6 @@ opencv-python==4.13.0.92
 opencv-python-headless==4.13.0.92
 opt-einsum==3.3.0
 packaging==26.2
-paddlex==3.7.2
 pandas==3.0.3
 pillow==12.2.0
 polars==1.42.1
