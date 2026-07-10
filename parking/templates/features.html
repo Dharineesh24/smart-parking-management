@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block title %}Features{% endblock %}
+
+{% block content %}
+
+<style>
+
+.card{
+    transition:0.3s;
+    cursor:pointer;
+    border:none;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
+
+a{
+    text-decoration:none;
+    color:black;
+}
+
+</style>
+
+<section class="py-5">
+
+<div class="container">
+
+<h1 class="text-center fw-bold mb-5">
+⭐ Our Features
+</h1>
+
+<div class="row g-4">
+
+<!-- AI Scan -->
+
+<div class="col-md-4">
+
+<a href="{% url 'scan' %}">
+
+<div class="card shadow h-100">
+
+<div class="card-body text-center">
+
+<h1>📷</h1>
+
+<h3>AI Number Plate Scan</h3>
+
+<p>
+Detect vehicle number automatically using
+YOLO and EasyOCR.
+</p>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+<!-- Vehicle Entry -->
+
+<div class="col-md-4">
+
+<a href="{% url 'vehicle_entry' %}">
+
+<div class="card shadow h-100">
+
+<div class="card-body text-center">
+
+<h1>🚗</h1>
+
+<h3>Vehicle Entry</h3>
+
+<p>
+Fast vehicle entry with automatic receipt.
+</p>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+<!-- Smart Receipt -->
+
+<div class="col-md-4">
+
+<a href="{% url 'view_vehicles' %}">
+
+<div class="card shadow h-100">
+
+<div class="card-body text-center">
+
+<h1>🧾</h1>
+
+<h3>Smart Receipt</h3>
+
+<p>
+Generate Entry and Exit receipts instantly.
+</p>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+<!-- Dashboard -->
+
+<div class="col-md-4">
+
+<a href="{% url 'dashboard' %}">
+
+<div class="card shadow h-100">
+
+<div class="card-body text-center">
+
+<h1>📊</h1>
+
+<h3>Dashboard</h3>
+
+<p>
+View reports, collections and parking status.
+</p>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+<!-- Setup -->
+
+<div class="col-md-4">
+
+<a href="{% url 'setup' %}">
+
+<div class="card shadow h-100">
+
+<div class="card-body text-center">
+
+<h1>🌐</h1>
+
+<h3>Parking Setup</h3>
+
+<p>
+Configure parking details, fees and language.
+</p>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+<!-- Login -->
+
+<div class="col-md-4">
+
+<a href="{% url 'login' %}">
+
+<div class="card shadow h-100">
+
+<div class="card-body text-center">
+
+<h1>🔒</h1>
+
+<h3>Secure Login</h3>
+
+<p>
+Admin login with secure access to parking records.
+</p>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+{% endblock %}

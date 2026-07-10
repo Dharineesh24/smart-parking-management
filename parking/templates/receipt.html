@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card border-dark mx-auto p-3"
+         style="width:300px;font-family:monospace;border:2px dashed black;">
+
+        <div class="text-center">
+            {% if vehicle.language == "ta" %}
+
+<h5><b>இருசக்கர வாகன நிறுத்துமிடம்</b></h5>
+<small>நுழைவு ரசீது</small>
+
+{% else %}
+
+<h5><b>TWO WHEELER PARKING</b></h5>
+<small>ENTRY RECEIPT</small>
+
+{% endif %}
+            <small>ENTRY RECEIPT</small>
+        </div>
+
+        <hr>
+
+        {% if vehicle.language == "ta" %}
+
+<p><b>ரசீது எண் :</b> {{ vehicle.id }}</p>
+
+<p><b>நுழைவு நேரம் :</b> {{ vehicle.entry_time|date:"d-m-Y h:i A" }}</p>
+
+<p><b>வாகன எண் :</b> {{ vehicle.vehicle_number }}</p>
+
+<p><b>வாகன வகை :</b> {{ vehicle.vehicle_type }}</p>
+
+<p><b>கட்டணம் :</b> நிலுவையில்</p>
+
+{% else %}
+
+<p><b>ID :</b> {{ vehicle.id }}</p>
+
+<p><b>ENTRY :</b> {{ vehicle.entry_time|date:"d-m-Y h:i A" }}</p>
+
+<p><b>REG :</b> {{ vehicle.vehicle_number }}</p>
+
+<p><b>TYPE :</b> {{ vehicle.vehicle_type }}</p>
+
+<p><b>PAYMENT :</b> DUE</p>
+
+{% endif %}
+
+        <hr>
+
+        <div class="text-center">
+
+            {% if vehicle.barcode %}
+                <img src="{{ vehicle.barcode.url }}" width="220">
+            {% endif %}
+
+        </div>
+
+        <hr>
+
+        <div class="text-center">
+            <button onclick="window.print()" class="btn btn-success">
+                🖨 Print Receipt
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+window.onload = function(){
+    window.print();
+}
+
+window.onafterprint = function(){
+    window.location.href="{% url 'vehicle_entry' %}";
+}
+</script>
+
+{% endblock %}

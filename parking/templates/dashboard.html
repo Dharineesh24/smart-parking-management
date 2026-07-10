@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">🚗 Vehicle Parking Dashboard</h2>
+
+    <!-- First Row -->
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3 shadow">
+                <div class="card-body text-center">
+                    <h5>Total Vehicles</h5>
+                    <h2>{{ total_vehicles }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3 shadow">
+                <div class="card-body text-center">
+                    <h5>Parked Vehicles</h5>
+                    <h2>{{ parked_vehicles }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3 shadow">
+                <div class="card-body text-center">
+                    <h5>Exited Vehicles</h5>
+                    <h2>{{ exited_vehicles }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Second Row -->
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3 shadow">
+                <div class="card-body text-center">
+                    <h5>Today's Entry</h5>
+                    <h2>{{ today_entry }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3 shadow">
+                <div class="card-body text-center">
+                    <h5>Today's Exit</h5>
+                    <h2>{{ today_exit }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-dark mb-3 shadow">
+                <div class="card-body text-center">
+                    <h5>Today's Collection</h5>
+                    <h2>₹ {{ today_collection }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Chart -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>📈 Parking Statistics</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <canvas id="parkingChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- Recent Vehicles -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4>🚗 Recent Vehicles</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-hover table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Vehicle No</th>
+                        <th>Type</th>
+                        <th>Entry Time</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for vehicle in recent_vehicles %}
+
+                    <tr>
+
+                        <td>{{ vehicle.vehicle_number }}</td>
+
+                        <td>{{ vehicle.vehicle_type }}</td>
+
+                        <td>{{ vehicle.entry_time }}</td>
+
+                        <td>
+
+                            {% if vehicle.status == "Parked" %}
+
+                            <span class="badge bg-success">
+                                Parked
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger">
+                                Exited
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No Vehicles Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById("parkingChart");
+
+new Chart(ctx,{
+
+    type:"bar",
+
+    data:{
+
+        labels:[
+            "Today's Entry",
+            "Today's Exit",
+            "Parked",
+            "Exited"
+        ],
+
+        datasets:[{
+
+            label:"Vehicle Count",
+
+            data:[
+                {{ today_entry }},
+                {{ today_exit }},
+                {{ parked_vehicles }},
+                {{ exited_vehicles }}
+            ],
+
+            borderWidth:1
+
+        }]
+
+    },
+
+    options:{
+
+        responsive:true,
+
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

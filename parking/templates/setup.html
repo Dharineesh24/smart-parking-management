@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Setup{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow p-4">
+
+        <h2 class="text-center mb-4">⚙ Parking Setup</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Parking Name</label>
+                <input type="text" class="form-control" name="parking_name"
+                       value="{{ setup.parking_name|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Owner Name</label>
+                <input type="text" class="form-control" name="owner_name"
+                       value="{{ setup.owner_name|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Mobile Number</label>
+                <input type="text" class="form-control" name="mobile_number"
+                       value="{{ setup.mobile_number|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email"
+                       value="{{ setup.email|default:'' }}">
+            </div>
+
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea class="form-control" name="address" rows="3">{{ setup.address|default:'' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>One Day Parking Fee</label>
+                <input type="number" class="form-control" name="one_day_fee"
+                       value="{{ setup.one_day_fee|default:20 }}">
+            </div>
+
+            <div class="mb-3">
+                <label>Default Language</label>
+
+                <select class="form-control" name="default_language">
+
+                    <option value="en"
+                    {% if setup.default_language == "en" %}selected{% endif %}>
+                    English
+                    </option>
+
+                    <option value="ta"
+                    {% if setup.default_language == "ta" %}selected{% endif %}>
+                    தமிழ்
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+                <label>Parking Logo</label>
+                <input type="file" class="form-control" name="parking_logo">
+            </div>
+
+            {% if setup.parking_logo %}
+            <div class="mb-3 text-center">
+                <img src="{{ setup.parking_logo.url }}" width="120">
+            </div>
+            {% endif %}
+
+            <button class="btn btn-primary w-100">
+                Save Settings
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

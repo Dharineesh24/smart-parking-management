@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+
+<style>
+
+.hero-img{
+    transition:0.5s;
+}
+
+.hero-img:hover{
+    transform:scale(1.05);
+}
+
+.card{
+    border:none;
+    border-radius:20px;
+    transition:.4s;
+}
+
+.card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.25);
+
+}
+
+.counter{
+
+    font-size:45px;
+
+    font-weight:bold;
+
+    color:#0d6efd;
+
+}
+
+.icon{
+
+    font-size:60px;
+
+}
+
+</style>
+
+<section class="py-5">
+
+<div class="container">
+
+<div class="row align-items-center">
+
+<div class="col-lg-6 text-center">
+
+<img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png"
+class="img-fluid"
+width="450">
+
+</div>
+
+<div class="col-lg-6">
+
+<h1 class="fw-bold">
+
+About Smart Parking
+
+</h1>
+
+<p class="mt-4 fs-5">
+
+Smart Parking Management System is an AI-powered vehicle parking solution.
+
+The system automatically detects vehicle number plates using YOLO and EasyOCR,
+performs vehicle entry and exit, generates QR Codes, Barcodes, Entry Receipts,
+Exit Receipts and Dashboard Reports.
+
+</p>
+
+<a href="{% url 'login' %}" class="btn btn-warning btn-lg mt-3">
+
+Get Started
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-5 bg-light">
+
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+
+Our Mission
+
+</h2>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+
+<div class="card shadow border-0 h-100">
+
+<div class="card-body text-center">
+
+<h1>🚗</h1>
+
+<h3>Smart Parking</h3>
+
+<p>
+
+Manage vehicle parking using Artificial Intelligence.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card shadow border-0 h-100">
+
+<div class="card-body text-center">
+
+<h1>⚡</h1>
+
+<h3>Fast Entry</h3>
+
+<p>
+
+Reduce manual work and save time.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card shadow border-0 h-100">
+
+<div class="card-body text-center">
+
+<h1>🔒</h1>
+
+<h3>Secure</h3>
+
+<p>
+
+Maintain vehicle records safely.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-5">
+
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+
+📊 Our Statistics
+
+</h2>
+
+<div class="row text-center">
+
+<div class="col-md-3">
+
+<div class="card shadow p-4">
+
+<h1 class="counter">1000+</h1>
+
+<h5>Vehicles</h5>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow p-4">
+
+<h1 class="counter">99%</h1>
+
+<h5>Accuracy</h5>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow p-4">
+
+<h1 class="counter">24/7</h1>
+
+<h5>Support</h5>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow p-4">
+
+<h1 class="counter">AI</h1>
+
+<h5>Powered</h5>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+{% endblock %}

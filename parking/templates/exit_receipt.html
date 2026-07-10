@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow p-4 mx-auto" style="max-width:450px;">
+
+        <div class="text-center">
+
+            {% if vehicle.language == "ta" %}
+                <h2>🚗 ஸ்மார்ட் பார்க்கிங் சிஸ்டம்</h2>
+                <p class="text-muted">வெளியேறும் ரசீது</p>
+            {% else %}
+                <h2>🚗 Smart Parking System</h2>
+                <p class="text-muted">Exit Receipt</p>
+            {% endif %}
+
+        </div>
+
+        <hr>
+
+        <table class="table table-borderless">
+
+            {% if vehicle.language == "ta" %}
+
+            <tr>
+                <th>ரசீது எண்</th>
+                <td>#{{ vehicle.id }}</td>
+            </tr>
+
+            <tr>
+                <th>வாகன எண்</th>
+                <td>{{ vehicle.vehicle_number }}</td>
+            </tr>
+
+            <tr>
+                <th>வாகன வகை</th>
+                <td>{{ vehicle.vehicle_type }}</td>
+            </tr>
+
+            <tr>
+                <th>நுழைவு நேரம்</th>
+                <td>{{ vehicle.entry_time|date:"d-m-Y h:i A" }}</td>
+            </tr>
+
+            <tr>
+                <th>வெளியேறும் நேரம்</th>
+                <td>{{ vehicle.exit_time|date:"d-m-Y h:i A" }}</td>
+            </tr>
+
+            <tr>
+                <th>கால அளவு</th>
+                <td>
+                    {% if days > 0 %}
+                        {{ days }} நாள் {{ hours }} மணி {{ minutes }} நிமிடம்
+                    {% else %}
+                        {{ hours }} மணி {{ minutes }} நிமிடம்
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>கட்டணம்</th>
+                <td><b>₹ {{ vehicle.amount }}</b></td>
+            </tr>
+
+            <tr>
+                <th>நிலை</th>
+                <td><span class="badge bg-success">செலுத்தப்பட்டது</span></td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <th>Receipt ID</th>
+                <td>#{{ vehicle.id }}</td>
+            </tr>
+
+            <tr>
+                <th>Vehicle No</th>
+                <td>{{ vehicle.vehicle_number }}</td>
+            </tr>
+
+            <tr>
+                <th>Vehicle Type</th>
+                <td>{{ vehicle.vehicle_type }}</td>
+            </tr>
+
+            <tr>
+                <th>Entry Time</th>
+                <td>{{ vehicle.entry_time|date:"d-m-Y h:i A" }}</td>
+            </tr>
+
+            <tr>
+                <th>Exit Time</th>
+                <td>{{ vehicle.exit_time|date:"d-m-Y h:i A" }}</td>
+            </tr>
+
+            <tr>
+                <th>Duration</th>
+                <td>
+                    {% if days > 0 %}
+                        {{ days }} Day {{ hours }} Hr {{ minutes }} Min
+                    {% else %}
+                        {{ hours }} Hr {{ minutes }} Min
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Amount</th>
+                <td><b>₹ {{ vehicle.amount }}</b></td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td><span class="badge bg-success">Paid</span></td>
+            </tr>
+
+            {% endif %}
+
+        </table>
+
+        <div class="text-center">
+
+            {% if vehicle.qr_code %}
+                <img src="{{ vehicle.qr_code.url }}" width="140">
+            {% endif %}
+
+        </div>
+
+        <hr>
+
+        <div class="text-center">
+
+            {% if vehicle.language == "ta" %}
+                <button class="btn btn-success" onclick="window.print()">
+                    🖨 அச்சிடு
+                </button>
+            {% else %}
+                <button class="btn btn-success" onclick="window.print()">
+                    🖨 Print Receipt
+                </button>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+window.onload = function () {
+    window.print();
+}
+
+window.onafterprint = function () {
+    window.location.href = "{% url 'view_vehicles' %}";
+}
+</script>
+
+{% endblock %}

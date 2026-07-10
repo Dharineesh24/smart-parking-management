@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Scan Number Plate{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="text-center mb-4">Scan Number Plate</h2>
+
+    <video id="video" width="100%" autoplay playsinline class="border rounded"></video>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <div class="text-center mt-3">
+
+    <div class="mb-3">
+    <label><b>Select Language</b></label>
+
+    <select id="language" class="form-control">
+        <option value="en">English</option>
+        <option value="ta">தமிழ்</option>
+    </select>
+</div>
+
+        <button class="btn btn-primary" onclick="captureImage()">
+            Scan Number Plate
+        </button>
+    </div>
+
+    <div class="mt-4">
+        <label>Detected Vehicle Number</label>
+        <input type="text" id="vehicle_number" class="form-control" readonly>
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+
+const video = document.getElementById("video");
+
+navigator.mediaDevices.getUserMedia({
+    video: {
+        facingMode: "environment"
+    }
+})
+.then(stream => {
+    video.srcObject = stream;
+})
+.catch(err => {
+    console.log(err);
+    alert("Camera Error: " + err.name + "\n" + err.message);
+});
+async function captureImage(){
+
+    const canvas = document.getElementById("canvas");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video,0,0);
+
+    document.getElementById("vehicle_number").value = "Scanning...";
+
+    canvas.toBlob(async function(blob){
+
+        const formData = new FormData();
+        formData.append("image", blob, "plate.jpg");
+        formData.append("language", document.getElementById("language").value);
+
+        const response = await fetch("/scan_ocr/",{
+            method:"POST",
+            body:formData
+        });
+
+       // if (!response.ok) {
+    //alert("Server Error");
+    //return;
+//}
+
+        const data = await response.json();
+        console.log(data);
+
+        document.getElementById("vehicle_number").value = data.vehicle_number;
+
+        if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+        }
+
+    },"image/jpeg");
+
+}
+
+</script>
+
+{% endblock %}
