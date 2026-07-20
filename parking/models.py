@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class Vehicle(models.Model):
 
@@ -9,6 +10,18 @@ class Vehicle(models.Model):
     )
 
     owner_name = models.CharField(max_length=100)
+    entered_by = models.ForeignKey(User,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name="entered_vehicles")
+    
+    exited_by = models.ForeignKey(User,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name="exited_vehicles")
+
     vehicle_number = models.CharField(max_length=20)
     vehicle_type = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=15)

@@ -11,6 +11,7 @@ from io import BytesIO
 import qrcode
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 import cv2
 import numpy as np
 import re
@@ -29,6 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 model = YOLO(str(BASE_DIR / "parking" / "models" / "best.pt"))
 
+@login_required(login_url="login")
 def home(request):
     return render(request, 'home.html')
 
@@ -48,11 +50,15 @@ def login_view(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user:
+        if user is not None:
             login(request, user)
-            return redirect("home")
-        else:
-            return HttpResponse("Invalid Username or Password")
+
+            if user.is_superuser:
+                return redirect("dashboard")
+            else:
+                return redirect("vehicle_entry")
+
+        return HttpResponse("Invalid Username or Password")
 
     return render(request, "login.html")
 
@@ -60,22 +66,50 @@ def logout_view(request):
     logout(request)
     return redirect("login")
 
+
+@login_required
 def vehicle_entry(request):
+    if request.user.is_superuser:
+        return redirect("dashboard")
+
     if request.method == "POST":
-        slot = request.POST['parking_slot']
+        slot = request.POST["parking_slot"]
 
         if Vehicle.objects.filter(parking_slot=slot, status="Parked").exists():
             return HttpResponse("This parking slot is already occupied!")
 
         vehicle = Vehicle.objects.create(
-            owner_name=request.POST['owner_name'],
-            vehicle_number=request.POST['vehicle_number'],
-            vehicle_type=request.POST['vehicle_type'],
-            phone_number=request.POST['phone_number'],
-            parking_slot=request.POST['parking_slot']
+            owner=request.user,
+            owner_name=request.POST["owner_name"],
+            vehicle_number=request.POST["vehicle_number"],
+            vehicle_type=request.POST["vehicle_type"],
+            phone_number=request.POST["phone_number"],
+            parking_slot=slot,
+        )
+@login_required
+def vehicle_entry(request):
+    if request.user.is_superuser:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+
+        slot = request.POST["parking_slot"]
+
+        if Vehicle.objects.filter(parking_slot=slot, status="Parked").exists():
+            return HttpResponse("This parking slot is already occupied!")
+
+        vehicle = Vehicle.objects.create(
+            owner=request.user,
+            owner_name=request.POST["owner_name"],
+            vehicle_number=request.POST["vehicle_number"],
+            vehicle_type=request.POST["vehicle_type"],
+            phone_number=request.POST["phone_number"],
+            parking_slot=slot,
         )
 
-        url = f"http://192.168.1.8:8000/vehicle/{vehicle.id}/"
+        # QR Code
+        url = f"http://127.0.0.1:8000/vehicle/{vehicle.id}/"
+
         qr = qrcode.make(url)
 
         buffer = BytesIO()
@@ -87,8 +121,9 @@ def vehicle_entry(request):
             save=True
         )
 
+        # Barcode
         code128 = barcode.get(
-            'code128',
+            "code128",
             vehicle.vehicle_number,
             writer=ImageWriter()
         )
@@ -102,16 +137,18 @@ def vehicle_entry(request):
             save=True
         )
 
-        return redirect('receipt', vehicle_id=vehicle.id)
+        return redirect("receipt", vehicle_id=vehicle.id)
 
-    return render(request, 'vehicle_entry.html')
+    return render(request, "vehicle_entry.html")
 
 
+@login_required
 def view_vehicles(request):
     vehicles = Vehicle.objects.all()
     return render(request, 'view_vehicles.html', {'vehicles': vehicles})
 
 
+@login_required
 def edit_vehicle(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
 
@@ -129,6 +166,7 @@ def edit_vehicle(request, vehicle_id):
         'vehicle': vehicle
     })
 
+@login_required
 def delete_vehicle(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
     vehicle.delete()
@@ -145,6 +183,7 @@ def search_vehicle(request):
         "vehicle": vehicle
     })
 
+@login_required
 def dashboard(request):
 
     total_vehicles = Vehicle.objects.count()
@@ -184,6 +223,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
 from django.utils import timezone
 
+@login_required
 def vehicle_exit(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
 
@@ -207,10 +247,12 @@ def vehicle_exit(request, vehicle_id):
 
     return redirect("exit_receipt", vehicle_id=vehicle.id)
 
+@login_required
 def vehicle_details(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
     return render(request, "vehicle_details.html", {"vehicle": vehicle})
 
+@login_required
 def scan_vehicle(request):
     return render(request, "scan.html")
 
@@ -307,14 +349,15 @@ def scan_ocr(request):
 
     # New Entry
     vehicle = Vehicle.objects.create(
-        vehicle_number=vehicle_number,
-        owner_name="Parking User",
-        vehicle_type="Bike",
-        phone_number="0000000000",
-        parking_slot="A1",
-        language=language,
-    )
-
+    owner=request.user,
+    owner_name="Parking User",
+    vehicle_number=vehicle_number,
+    vehicle_type="Bike",
+    phone_number="0000000000",
+    parking_slot="A1",
+    language=language,
+)
+    
     # QR Code
     url = f"http://127.0.0.1:8000/vehicle/{vehicle.id}/"
 
@@ -376,6 +419,8 @@ def exit_receipt(request, vehicle_id):
 
 from .models import ParkingSetup
 
+@login_required 
+@staff_member_required
 def setup(request):
 
     setup = ParkingSetup.objects.first()
@@ -406,6 +451,8 @@ def setup(request):
 
 from django.contrib import messages
 
+@login_required
+@staff_member_required
 def delete_all_vehicles(request):
     Vehicle.objects.all().delete()
     messages.success(request, "All vehicles deleted successfully.")
