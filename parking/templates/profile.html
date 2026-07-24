@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-dark text-white">
+            <h3 class="mb-0">👤 Admin Profile</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-4 text-center">
+
+                        {% if profile_form.instance.profile_photo %}
+                            <img src="{{ profile_form.instance.profile_photo.url }}"
+                                 class="img-thumbnail rounded-circle"
+                                 width="180"
+                                 height="180">
+                        {% else %}
+                            <img src="https://via.placeholder.com/180"
+                                 class="img-thumbnail rounded-circle">
+                        {% endif %}
+
+                        <br><br>
+
+                        {{ profile_form.profile_photo }}
+
+                    </div>
+
+                    <div class="col-md-8">
+
+                        <div class="mb-3">
+                            <label>First Name</label>
+                            {{ user_form.first_name }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Last Name</label>
+                            {{ user_form.last_name }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            {{ user_form.email }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Phone</label>
+                            {{ profile_form.phone }}
+                        </div>
+
+                        <button class="btn btn-primary">
+                            💾 Save Changes
+                        </button>
+
+                        <a href="{% url 'change_password' %}" class="btn btn-warning ms-2">🔒 Change Password</a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -458,3 +458,54 @@ def delete_all_vehicles(request):
     messages.success(request, "All vehicles deleted successfully.")
     return redirect("view_vehicles")
 
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import UserUpdateForm, AdminProfileForm
+from .models import AdminProfile
+
+
+@login_required
+def profile(request):
+    profile, created = AdminProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = AdminProfileForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = AdminProfileForm(instance=profile)
+
+    return render(request, 'profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
+
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully.")
+            return redirect("profile")
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, "change_password.html", {"form": form})

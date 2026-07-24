@@ -75,3 +75,11 @@ class ParkingSetup(models.Model):
 
     def __str__(self):
         return self.parking_name
+
+class AdminProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone=models.CharField(max_length=15, blank=True)
+    profile_photo = models.ImageField(upload_to="profile_photos/", blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
